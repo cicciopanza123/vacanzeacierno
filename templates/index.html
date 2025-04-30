@@ -10,15 +10,28 @@
 <body>
     <h1>Benvenuto nel gioco Pokémon!</h1>
 
-    <form action="{{ url_for('genera_pacchetto_route') }}" method="post">
-        <button type="submit">Apri un pacchetto</button>
+    <!-- Form per aprire una bustina -->
+    <form action="{{ url_for('apri_bustina') }}" method="POST">
+        <button type="submit">Apri un pacchetto (10 crediti)</button>
     </form>
 
-    <p>Credito totale: {{ credito_giocatore }}</p>
+    <!-- Mostra la collezione di carte -->
+    {% if carte %}
+        <h2>La tua collezione di carte:</h2>
+        <ul>
+        {% for carta in carte %}
+            <li>{{ carta['Nome'] }} - Rarità: {{ carta['Rarità'] }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Non hai ancora carte nella tua collezione.</p>
+    {% endif %}
 
-    <form action="{{ url_for('visualizza_raccolta_route') }}" method="get">
-        <button type="submit">Mostra raccolta</button>
-    </form>
+    <!-- Mostra il credito totale -->
+    <p>Credito totale: {{ credito }}</p>
+
+    <!-- Link per visualizzare il credito su una pagina separata -->
+    <a href="{{ url_for('mostra_credito') }}">Visualizza il credito</a>
 </body>
 
 </html>

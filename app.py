@@ -4,12 +4,17 @@ import random
 
 app = Flask(__name__)
 
+# Carica il database dei Pokémon da un CSV
 database_pokemon = pd.read_csv('pokemon.csv')
+
+# Credito iniziale dell'utente
 saldo_utente = 100
 collezione_carte = []
 
+# Probabilità di rarità delle carte
 probabilita_rarita = ['Comune'] * 70 + ['Non Comune'] * 20 + ['Rara'] * 9 + ['Ultra Rara'] * 1
 
+# Funzione che crea una bustina
 def crea_bustina():
     pacchetto = []
     bonus_crediti = 0
@@ -31,10 +36,12 @@ def crea_bustina():
             numero_carte += 1
     return pacchetto, bonus_crediti
 
+# Funzione che salva la collezione di carte nel file
 def salva_collezione():
     df_collezione = pd.DataFrame(collezione_carte)
     df_collezione.to_csv('pokedex.csv', index=False)
 
+# Funzione che carica la collezione di carte da un file CSV
 def carica_collezione():
     global collezione_carte
     try:
@@ -42,10 +49,12 @@ def carica_collezione():
     except FileNotFoundError:
         collezione_carte = []
 
+# Carica la collezione all'avvio
 carica_collezione()
 
 @app.route('/')
 def home():
+    # Renderizza la pagina principale, passando il saldo e la collezione
     return render_template('index.html', credito=saldo_utente, carte=collezione_carte)
 
 @app.route('/apri_bustina', methods=['POST'])
@@ -59,12 +68,9 @@ def apri_bustina():
         saldo_utente += crediti_bonus
     return redirect(url_for('home'))
 
-@app.route('/collezione', methods=['GET'])
-def mostra_collezione():
-    return render_template('collezione.html', carte=collezione_carte)
-
 @app.route('/credito', methods=['GET'])
 def mostra_credito():
+    # Mostra il credito totale in una pagina separata
     return render_template('punti.html', credito=saldo_utente)
 
 if __name__ == '__main__':
